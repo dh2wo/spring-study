@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- 인터페이스 이름(풀네임) -->
+<mapper namespace="com.abc.dao.MemberDAO">
+<!-- 회원정보추가 -->
+<insert id = "insertMember" parameterType = "Member">
+	INSERT INTO 
+		MEMBER (USERID, USERPW, USERNAME, EMAIL)
+	VALUES
+		(#{userId}, #{userPw}, #{userName}, #{email})
+</insert>
+
+<!-- 한명의 회원정보 가져오기 -->
+<select id = "selectOneMember" parameterType = "String" resultType = "Member">
+	SELECT * FROM MEMBER
+	WHERE USERID = #{uesrId}
+</select>
+
+<!-- 로그인 -->
+<select id = "login" parameterType = "Member" resultType = "Member">
+	SELECT * FROM MEMBER
+	WHERE USERID = #{userId} and USERPW = #{userPw}
+</select>
+
+<!-- 회원정보 수정하기 -->
+<update id = "updateMember" parameterType = "Member">
+	UPDATE
+		MEMBER
+	SET 
+		USERPW = #{userPw},
+		USERNAME = #{userName},
+		EMAIL = #{email}
+	WHERE
+		USERID = #{userId}
+</update>
+
+<!-- 회원정보 삭제하기 -->
+<delete id = "deleteMember" parameterType = "Member">
+	DELETE FROM MEMBER
+	WHERE USERID = #{userId} AND USERPW = #{userPw}
+</delete>
+
+
+</mapper>

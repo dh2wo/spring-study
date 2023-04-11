@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http:\\www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>[회원탈퇴하기]</title>
+<script>
+	function confirmDelete(){
+		let con = confirm("정말 탈퇴하시겠어요?");
+		
+		if (con){
+			document.getElementById("delForm").submit();
+		} else {
+			alert("탈퇴 취소");
+		}
+	}
+</script>
+<style>
+</style>
+</head>
+<body>
+<h1>[회원탈퇴하기]</h1>
+<p>
+	<span th:text = ${session.login}></span>
+	회원님 정말 탈퇴하시겠습니까?<br>
+	아래 비밀번호를 입력해주세요.
+</p>
+<form id = "delForm" action = "deleteMember" method = "Post">
+	<input type = "password" name = "userPw" placeholder="비밀번호를 입력해주세요.">
+	<input type = "button" value = "탈퇴하기" onclick = "confirmDelete();">
+</form>
+<span th:id = "${msg != null}" th:text = "${msg}"></span>
+</body>
+</html>

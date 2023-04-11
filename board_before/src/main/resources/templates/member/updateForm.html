@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns:th="http:\\www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>[회원정보수정]</title>
+<script src = "js/memberScript.js"></script>
+</head>
+<body>
+<h1>[회원정보수정]</h1>
+<!-- 테이블 형식으로 입력창을 만들어서 정보를 서버로 보낸다고 할 때 form 태그 -->
+<form action="/updateMember" method = "post" onsubmit = "return checkvalue();">
+	<table>
+		<tr>
+			<th>아이디</th>
+			<td>
+				<input type = "text" name = "userId" id = "userId" th:value = ${member.userId} readonly> <!-- id는 JS에서 사용하기 때문에 VO랑 상관X -->
+			</td>
+		</tr>
+		<tr>
+			<th>비밀번호</th>
+			<td>
+				<input type = "password" name = "userPw" id = "pw1" th:value = ${member.userPw}> <!-- name은 VO객체와 동일하게 -->
+			</td>
+		</tr>
+		<tr>
+			<th>비밀번호 확인</th>
+			<td> <!-- 만약 pw2에도 userPw라는 name을 지정하면 -->
+				 <!-- pw1값, pw2값 -->
+				<input type = "password" id = "pw2" th:value = ${member.userPw}>
+			</td>
+		</tr>
+		<tr>
+			<th>이름</th>
+			<td>
+				<input type = "text" id = "userName" name = "userName" th:value = ${member.userName}>
+			</td>
+		</tr>
+		<tr>
+			<th>이메일</th>
+			<td>
+				<!-- "email" 속성은 입력된 값이 메일주소 형식인지 체크한다/PC 이외의 환경에서 이메일 입력 키보드 제공 -->
+				<input type = "email" id = "email" name = "email" th:value = ${member.email}> 
+			</td>
+		</tr>
+		<tr>
+			<!-- 가입하기 버튼을 가운데 정렬하고 싶어서 colspan 한거지 다른 이유X -->
+			<th colspan = "2">
+				<input type = "submit" value = "수정하기">
+				<button type="button" onclick="location.href='deleteMember'">탈퇴하기</button>
+			</th>
+		</tr>
+	</table>
+</form>
+</body>
+</html>

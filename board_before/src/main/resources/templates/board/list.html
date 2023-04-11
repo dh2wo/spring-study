@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html xmlns:th="http:\\www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>[글 목록]</title>
+<style>
+	.rec{
+		font-size: small;
+		font-weight: bold;
+		color: red;
+	}
+	img{
+		width: 15px;
+		height: 15px;
+	}
+</style>
+</head>
+<body>
+<h1>[글 목록]</h1>
+<!-- 
+	- boardNum : 글 번호 (PK, sequence 사용) 숫자
+	- title : 제목 문자열, 
+	- userId : 작성자 (FK=user.id) 문자열 
+	- inputDate : 작성시간 (default sysdate) 날짜, 
+	- viewCount : 조회수(default 0) 숫자
+ -->
+<!-- 글 목록 보여줄 곳 -->
+<table border = "1">
+	<tr>
+		<th>글 번호</th>
+		<th>제목</th>
+		<th>작성자</th>
+		<th>작성일시</th>
+		<th>조회수</th>
+	</tr>
+	<!-- !!!반복할것임!!! -->
+	<tr th:each = "board : ${bList}"> 
+		<td th:text = "${board.boardNum}"></td>
+		<td> <!-- 아래의 img 태그는 board에 파일명이 저장되어있을때만 표시됨  -->
+			<a th:href = "@{/read(boardNum = ${board.boardNum})}" th:text = "${board.title}"></a>
+			&nbsp;&nbsp;<span class = "rec"  th:text = "|추천${board.recommend}|">추천수</span>
+			&nbsp;&nbsp;<img src = "img/icon.png" th:if = "${board.savedFile} != null" and board.originalFile != null> 
+		</td>
+		<td th:text = "${board.userId}"></td>
+		<td th:text = "${board.inputDate}"></td>
+		<td th:text = "${board.viewCount}"></td>
+	</tr>
+</table>
+<a th:if = "${session.login != null}" href = "/write">글쓰기</a>
+<span th:if = "${session.login == null}">
+	글을 작성하려면<a href = "/login">로그인</a>하세요
+</span>
+<!-- 검색창 -->
+<!-- search에서 list로 바꾼 이유 -> 통합 -->
+<form action = "/list" method = "get">
+	<table>
+		<tr>
+			<td>
+				<select name = "category"> <!-- category라는 파라미터를 보낼것임 -->
+					<option value = "title" th:selected = "${category == 'title'}">제목</option>
+					<option value = "content" th:selected = "${category == 'content'}">내용</option>
+					<option value = "user" th:selected = "${category == 'user'}">작성자</option>
+				</select>
+			</td>
+			<td>
+				<!-- th:if 조건에 따라서 입력창에 하나만 표시됨 -->
+				<input type = "text" name = "keyword" th:if = "${keyword != null}" th:value = "${keyword}">
+				<input type = "text" name = "keyword" th:if = "${keyword == null}">
+				<input type = "submit" value = "검색하기">
+			</td>
+		</tr>
+	</table>
+</form>
+
+</body>
+</html>

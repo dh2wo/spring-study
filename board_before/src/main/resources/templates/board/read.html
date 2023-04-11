@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html xmlns:th="http:\\www.thymeleaf.org"> <!-- 글 보기 객체를 가져올것 -->
+<head>
+<meta charset="UTF-8">
+<title>[글 보기]</title>
+<script src = "js/jquery-3.6.3.min.js"></script> <!-- 제이쿼리 임포트 -->
+<script>
+	// document.ready == window.onload
+	$(document).ready(function() { //페이지가 로딩 됬을떄
+		
+		loadReply(); // 댓글 목록 가져오기
+		
+		// 이벤트 달기(다른 이벤트가 실행될때마다 on 메서드가 실행되는 것을 막기 위해서)
+		// 위로 가져옴
+		$("#btnUpdate").on("click", function() {
+			updateReply();
+		});
+		
+		// btnReply라는 id를 가진 버튼에 이벤트를 추가
+		$("#btnReply").on("click", function() {
+			insertReply();
+		});
+		
+		$("#btnUpdate").hide(); // 숨기기
+		
+		// btnRec라는 id를 가진 버튼에 이벤트를 추가
+		$("#btnRec").on("click", function() {  //click 이벤트가 실행되면 funtion() 실행
+			// 여기에서 ajax로 sever와 통신
+			
+			// document.getElementById("boardNum").value == 
+			let bNum = $("#boardNum").val();
+			// alert(bNum);
+			
+			$.ajax({
+				// 내가 필요한 설정들을 써서 서버에 보낼 수 있음
+				url: "/recommend2", // 호출할 서버의 url
+				method: "post", // get or post
+				data: {"boardNum" : bNum}, // url을 호출하면서 넘겨줄 data // bNum은 hidden태그에 있는 것
+				success: function(data){ //익명함수, 성공했을 때 실행
+ 					// data에 들어있는 값을 span id = "rec"에 지정
+					// $("#rec").text(data); 
+					if(data == "OK"){
+						alert("추천이 완료되었습니다.");
+					} else if(data == "NG") {
+						alert("이미 추천한 글입니다.");
+					}
+				} 
+			});
+		});
+	}); 
+	function askDelete() {
+		let answer = confirm("정말 삭제하시겠습니까?\n삭제하면 복구할 수 없습니다.");
+		
+		if (answer){
+			// hidden태그의 값을 가지고와서
+			// delete를 실행하는 주소로 이동
+			let bNum = document.getElementById("boardNum").value;
+			
+			// 현재 위치의 오른쪽 주소로 바꿈
+			location.href = "/delete?boardNum=" + bNum;
+		}
+	}
+	
+	// 여기에서 댓글 입력하는 ajax 호출
+	function insertReply() {
+		// 댓글 정보 가져오기(댓글 내용)
+		let replyText = $("#replyText").val(); //입력창에 입력된 문자열 가져오기
+		let boardNum = $("#boardNum").val(); // hidden 태그에 들어있는 글 번호
+		
+		// ajax로 댓글 정보 보내주기
+		$.ajax({
+			url: "/insertReply", //boardController
+			method: "post",
+			data: {"replyText" : replyText, "boardNum" : boardNum}, // replyText, boardNum를 보냄 
+			success: function(){
+				$("#replyText").val(""); // ("") = 빈 문자열로 입력창 초기화
+				loadReply(); // 댓글 목록 새로고침 -> 바로 보인다
+			}
+		});
+	} // end of insertReply
+	
+	// 댓글 목록 가져오는 ajax 호출하는 함수
+	function loadReply(){
+		// 글 번호 먼저 가져오기
+		let boardNum = $("#boardNum").val(); // hidden 태그에 달린 글 번호
+		
+		$.ajax({
+			url: "/loadReply",
+			method: "post",
+			data: {"boardNum" : boardNum},
+			success: function(data){
+				// hidden 태그에 들어있는 session 정보 가져오기
+				let login = $("#login").val();
+				
+				// data : List<Reply>
+				let replyTable = "<table>"; // 댓글 영역에 집어넣을 HTML을 생성
+				// 반복 $.each(반복할 뭉탱이, 뭉탱이로 할일)
+				$.each(data, function(index, item) { 
+					replyTable += "<tr>";
+					replyTable += "<td>" + item.replyText + "</td>";
+					replyTable += "<td>" + item.userId + "</td>";
+					replyTable += "<td>"
+					// 댓글 정보에 등록된 글쓴이 id랑 로그인한 사람의 id가 일치하면
+					if (item.userId == login) {
+						replyTable += "<a href = 'javascript:getOneReply(" + item.replyNum +");'>수정하기 </a>"; 
+						replyTable += "<a href = 'javascript:deleteReply(" + item.replyNum +");'>삭제하기</a>";
+					}
+					replyTable += "</td>";
+					replyTable += "</tr>";				
+				});
+				replyTable += "</table>"
+				
+				// reList라는 id를 가진 요소에 replyTable에 있는 HTML 문자열을 추가!
+				$("#reList").html(replyTable);
+			}
+		})
+	}	
+	
+	// 수정하기 링크를 타고 들어온 댓글 번호로 댓글 정보를 가져온다
+	function getOneReply(num) {
+		// 지금까지 한 ajax라는 함수 참고해서
+		// /getOneReply라는 url 호출하면 댓글정보 돌려주는 메서드 만들어보자
+		$.ajax({
+			url: "/getOneReply",
+			method: "post",
+			data: {"replyNum" : num}, 
+			success: function(reply){
+				//  얘는 입력창	  얘는 객체에 들어있는 댓글 내용	
+				$("#replyText").val(reply.replyText);
+				$("#replyText").focus();
+				
+				// 댓글달기 버튼은 숨기고
+				$("#btnReply").hide();
+				
+				// 댓글수정 버튼은 보여줘야함
+				$("#btnUpdate").show();
+				
+				// 숨겨진 selectedReply에 value를 글 번호로 설정
+				$("#selectedReply").val(reply.replyNum);
+			}
+		});
+	}
+	
+	function updateReply(){
+		// 새로운 댓글 내용 가지고 오기
+		let newReply = $("#replyText").val();
+		// 댓글 번호 가지고 오기
+		let rNum = $("#selectedReply").val();
+		
+		$.ajax({
+			url: "/updateReply",
+			method: "post",
+			data: {"replyText" : newReply, "replyNum" : rNum},
+			success: function(Reply){
+				loadReply(); // 새로운 댓글 목록 표시
+				$("#btnUpdate").hide(); // 수정 버튼 숨기기
+				$("#replyText").val(""); // 댓글창 비우기
+				$("#btnReply").show(); // 댓글쓰기 버튼으로 전환
+			}
+		});
+	}
+	
+	// 댓글 삭제 링크를 클릭했을 때 파라미터에 입력된 댓글번호를 num이라는 이름으로 가져옴
+	function deleteReply(num) {
+		$.ajax({
+			url: "/deleteReply",
+			method: "get",
+			data: {"replyNum" : num},
+			success: function(){
+				loadReply(); // 새로운 댓글 목록 표시
+			}
+		});
+	}
+</script>
+</head>
+<body>
+<!--  
+	글 번호, 제목, 내용, 글쓴이, 글쓴 시간, 조회수, 첨부파일(있다면)	
+ -->
+<h1>[글 보기]</h1>
+<table th:object = "${board}" border = "1">
+	<tr>
+		<th th:text = "*{boardNum}">글번호</th>
+		<th th:text = "*{title}" colspan = "2">제목 들어갈 곳</th>
+	</tr>
+	<tr>
+		<th th:text = "*{UserId}">글쓴이</th>
+		<th th:text = "*{inputDate}">글쓴시간</th>
+		<th th:text = "*{viewCount}">조회수</th>
+	</tr>
+	<tr>
+		<td th:text = "*{content}" colspan = "3">
+			내용 들어갈 곳
+		</td>
+	</tr>
+	<tr>
+		<th>첨부파일</th>
+		<td colspan = "2">
+		<span th:if = "*{originalFile == null}" th:text = "|첨부파일이 없습니다.|"></span>
+		<div th:if = "*{originalFile != null}">
+			<a th:if = "*{originalFile != null}" th:text = "*{originalFile}" th:href = "@{/download(boardNum = *{boardNum})}"></a>
+			<img th:if = "${#strings.endsWith(board.savedFile, 'jpg') or #strings.endsWith(board.savedFile, 'png') or #string.endsWith(board.savedFile, 'gif')}" th:src = "@{/display(boardNum = *{boardNum})}" width = "100">
+		</div>
+		</td>
+	</tr>
+</table>
+<input type = "hidden" id = "boardNum" th:value = "${board.boardNum}">	
+ <!--  
+	수정, 삭제, 뒤로가기 링크 or 버튼
+ -->
+ <!-- 세션에 들어있는 로그인정보와 글쓴이의 id가 같다면 수정/삭제 가능 -->
+ <div th:if = "${session.login == board.userId}">
+ 						<!-- 컨트롤러    =     실제 값 -->
+	 <a th:href = "@{/update(boardNum = ${board.boardNum})}">수정하기</a>&nbsp;&nbsp;&nbsp; 
+	 <a th:href = "@{/delete(boardNum = ${board.boardNum})}">삭제하기(사정없이 삭제하기)</a>&nbsp;&nbsp;&nbsp; 
+	 <a href = "javascript:askDelete();">삭제하기</a>
+ </div>
+ <a href = "/list">뒤로가기</a> 
+ 
+ <!-- 추천수와 추천하기 버튼 -->
+<span id = "rec">추천수</span>&nbsp;&nbsp;<input type = "button" value = "추천" id = "btnRec">
+
+<!-- 댓글 구역 -->
+<div id =  "reply">
+	<div id = "reList"></div>
+	<textarea id = "replyText" cols = "30" rows = ""></textarea>
+	<input type = "button" value = "댓글달기" id = "btnReply">
+	<input type = "button" value = "댓글수정" id = "btnUpdate">
+	<input type = "hidden" id = "selectedReply" value = "">
+</div>
+
+<input type="hidden" id = "login" th:value = "${session.login}">
+</body>
+</html>

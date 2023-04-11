@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- 인터페이스 이름(풀네임) -->
+<mapper namespace="com.abc.dao.BoardDAO">
+<!-- 글 목록 보기(글 번호 기준으로 내림차순) -->
+<select id="selectAllBoard" resultType="Board">
+	SELECT 
+		BOARDNUM AS boardNum,
+		TITLE AS title,
+		USERID as userid,
+		VIEWCOUNT AS viewcount,
+		<!-- 오라클 함수를 지정했을 때에는 꼭! 가져올 필드 이름으로 별칭 지정하기 -->
+		TO_CHAR(INPUTDATE, 'YYYY/YY/DD') AS inputdate
+	FROM BOARD
+	ORDER BY BOARDNUM DESC
+</select>
+
+<!-- 글 하나 조회하기 -->
+<select id="selectOneBoard" parameterType="int" resultType="Board">
+	SELECT
+		BOARDNUM AS boardNum,
+		TITLE AS title,
+		CONTENT AS content,
+		USERID as userid,
+		VIEWCOUNT AS viewcount,
+		<!-- HH 12hours, HH24 24hours -->
+		TO_CHAR(INPUTDATE, 'YYYY/YY/DD HH24:MI:SS') AS inputdate,
+		ORIGINALFILE AS originalFile,
+		SAVEDFILE AS savedFile
+	FROM BOARD
+	WHERE BOARDNUM = #{boardNum}
+</select>
+
+<!-- 글 쓰기 -->
+<insert id = "insertBoard" parameterType="Board">
+	INSERT INTO BOARD(
+		BOARDNUM, 
+		TITLE, 
+		CONTENT, 
+		USERID 
+		<if test = "originalFile != null and savedFile != null">
+			, ORIGINALFILE <!-- 앞에 , 찍어주는 이유 : if가 없을때 userId 뒤에 ,가 있으면 오류  -->
+			, SAVEDFILE
+		</if>
+	)
+	VALUES(
+		BOARD_SEQ.NEXTVAL, 
+		#{title}, 
+		#{content}, 
+		#{userId}
+		<if test = "originalFile != null and savedFile != null">
+			, #{originalFile}
+			, #{savedFile}
+		</if>
+	)
+</insert>
+
+<!-- 글 수정하기 -->
+<update id = "updateBoard" parameterType="Board">
+	UPDATE BOARD
+	SET TITLE = #{title}, CONTENT = #{content}
+	WHERE BOARDNUM = #{boardNum}
+</update>
+
+<!-- 글 삭제하기 -->
+<delete id = "deleteBoard" parameterType="int">
+	DELETE FROM BOARD
+	WHERE BOARDNUM = #{boardNum}
+</delete>
+
+<!-- 조회수 늘리기 -->
+<update id="addViewCount" parameterType = "int">
+	UPDATE BOARD
+	SET VIEWCOUNT = VIEWCOUNT + 1
+	WHERE BOARDNUM = #{boardNum}
+</update>
+
+<!-- 글 검색하기(제목) -->
+<select id = "selectBoardByKeyword" parameterType = "String" resultType = "Board">
+	SELECT 
+		BOARDNUM AS boardNum,
+		TITLE AS title,
+		USERID as userid,
+		VIEWCOUNT AS viewcount,
+		<!-- 오라클 함수를 지정했을 때에는 꼭! 가져올 필드 이름으로 별칭 지정하기 -->
+		TO_CHAR(INPUTDATE, 'YYYY/YY/DD') AS inputdate
+	FROM BOARD
+	WHERE TITLE LIKE '%'||#{keyword}||'%' <!-- %, _ 와일드카드 -->
+	ORDER BY BOARDNUM DESC
+</select>
+<!-- 글 검색하기(내용) -->
+<select id = "selectBoardByContent" parameterType = "String" resultType = "Board">
+	SELECT 
+		BOARDNUM AS boardNum,
+		TITLE AS title,
+		USERID as userid,
+		VIEWCOUNT AS viewcount,
+		<!-- 오라클 함수를 지정했을 때에는 꼭! 가져올 필드 이름으로 별칭 지정하기 -->
+		TO_CHAR(INPUTDATE, 'YYYY/YY/DD') AS inputdate
+	FROM BOARD
+	WHERE CONTENT LIKE '%'||#{keyword}||'%' <!-- %, _ 와일드카드 -->
+	ORDER BY BOARDNUM DESC
+</select>
+<!-- 글 검색하기(사용자) -->
+<select id = "selectBoardByUser" parameterType = "String" resultType = "Board">
+	SELECT 
+		BOARDNUM AS boardNum,
+		TITLE AS title,
+		USERID as userid,
+		VIEWCOUNT AS viewcount,
+		<!-- 오라클 함수를 지정했을 때에는 꼭! 가져올 필드 이름으로 별칭 지정하기 -->
+		TO_CHAR(INPUTDATE, 'YYYY/YY/DD') AS inputdate
+	FROM BOARD
+	WHERE USERID LIKE '%'||#{keyword}||'%' <!-- %, _ 와일드카드 -->
+	ORDER BY BOARDNUM DESC
+</select>
+
+<!-- 조건부 검색 -->
+<select id = "selectAllBoard_1" parameterType = "map" resultType = "Board"> 
+<!-- category, keyword, user를 맵의 값으로 가져옴 -->
+	SELECT 
+		B.BOARDNUM AS boardNum,
+		B.TITLE AS title,
+		B.USERID as userid,
+		B.VIEWCOUNT AS viewcount,
+		TO_CHAR(B.INPUTDATE, 'YYYY/YY/DD') AS inputdate,
+		B.ORIGINALFILE AS originalFile,
+        B.SAVEDFILE AS savedFile,
+		COUNT(R.BOARDNUM) AS recommend
+	FROM 
+		BOARD B JOIN RECOMMENDATION R 
+		ON B.BOARDNUM = R.BOARDNUM(+)
+	<!-- 필요에 따라서 추가 될수도 있고 안될수도 있음 -->
+	<if test = "category != null and keyword != null">
+		<where>
+			<if test = "category eq 'title'"> <!-- eq => equals -->
+				TITLE LIKE '%'||#{keyword}||'%'
+			</if>
+			<if test = "category eq 'content'">
+				CONTENT LIKE '%'||#{keyword}||'%'
+			</if> 
+			<if test = "category eq 'user'">
+				B.USERID LIKE '%'||#{keyword}||'%'
+			</if> 
+		</where>
+	</if>
+	GROUP BY B.BOARDNUM, B.TITLE, B.USERID, B.VIEWCOUNT, TO_CHAR(B.INPUTDATE, 'YYYY/YY/DD'), B.ORIGINALFILE, B.SAVEDFILE
+	ORDER BY B.BOARDNUM DESC
+</select>
+
+<!-- 추천수 업데이트 -->
+<update id="updateRecommend" parameterType = "int">
+	UPDATE BOARD
+	SET RECOMMEND = RECOMMEND + 1
+	WHERE BOARDNUM = #{boardNum}
+</update>
+
+<!-- 추천확인 -->
+<select id = "checkRecommendHistory" parameterType = "map" resultType = "int">
+		SELECT COUNT(*) FROM RECOMMENDATION
+		WHERE BOARDNUM = #{boardNum} AND USERID = #{userId}  
+</select>
+
+<!-- 추천저장 -->
+<insert id = "insertRecommendHistory" parameterType = "map">
+		INSERT INTO RECOMMENDATION
+		VALUES (#{boardNum}, #{userId})
+</insert>
+</mapper>

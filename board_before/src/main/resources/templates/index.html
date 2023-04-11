@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http:\\www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>[게시판]</title>
+</head>
+<body>
+<!-- <span th:text = "${session}"></span><br> --> <!-- 세션 객체가 들어있는지 확인용 -->
+<p>
+	<span th:if = "${session.login == null}">로그인 하지 않은 사용자입니다.</span>
+	<span th:if = "${session.login != null}" th:text = "|${session.login}님 안녕하세요!|"></span> 
+															<!-- | ~ |문자열 결합 -->
+</p>
+<ul>
+	<!-- 로그인 하지 않은 사람한테만 회원가입 링크 보여주기  -->
+	<li th:if = "${session.login == null}">
+		<a href = "/join">회원가입</a> <!-- href = "/?" = Controller의 Mapping 주소 --> 
+		<!-- localhost:8888/join -->
+	</li>
+	<!-- 로그인 하지 않은 사람한테만 로그인 링크 보여주기 -->
+	<li th:if = "${session.login == null}">
+		<a href = "/login">로그인</a>
+	</li>
+	<!-- 로그인한 사람한테만 로그아웃 링크 보여주기 -->
+	<li th:if = "${session.login != null}">
+		<a href = "/logout">로그아웃</a>
+	</li>
+	<li th:if = "${session.login != null}">
+		<a href = "/updateMember">회원정보 수정</a>
+	</li>
+	<li>
+		<a href = "/list">게시판 이동</a>
+	</li>
+</ul>
+</body>
+</html>

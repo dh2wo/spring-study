@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>[로그인]</title>
+<script>
+	function checkForm(){
+		let userId = document.getElementById("userId").value;
+		let userPw = document.getElementById("userPw").value;
+		
+		// trim() : 문자열의 앞 또는 뒤에 붙어있는 공백 삭제
+		if (userId.trim().length == 0 || userPw.trim().length == 0){
+			alert("아이디 또는 비밀번호가 비어있습니다.");
+			return false;
+		}
+	}
+</script>
+</head>
+<body>
+<h1>[로그인]</h1>
+<form action = "/login" method = "Post" onsubmit="return checkForm();">
+	<table>
+		<tr>
+			<th>아이디</th>
+			<td>					<!-- name = 서버에 보내줄 값, id = js안에서 쓸 값 -->
+				<input type = "text" name = "userId" id = "userId"> 
+			</td>
+		</tr>	
+		<tr>
+			<th>비밀번호</th>
+			<td>
+				<input type = "password" name = "userPw" id = "userPw">
+			</td>
+		</tr>
+		<tr>
+			<th colspan = "2">
+				<input type = "submit" value = "로그인">
+				<button type="button" onclick="location.href='join'">가입하기</button>
+			</th>
+		</tr>	
+	</table>
+</form>
+</body>
+</html>
