@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<!-- 타임리프 사용할떄는 꼭 추가 -->
+<html xmlns:th="http:\\www.thymeleaf.org"> 
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script>
+	function update(){
+		// .value = 입력창(input)에 사용하는 속성
+		// .innerText = 그 이외의 요소에 사용하는  속성/   td id=
+		let friendName = document.getElementById("friendName").innerText;
+		
+		// td에 쓰여있던 친구의 이름을 가져와서 주소와 함께 서버에 전송
+		location.href = "/updateFriend?name=" + friendName;
+	}
+	
+	function deleteInfo(){
+		// 정말 삭제하시겠습니까?
+		// javascript의 3개 창 종류
+		// alert : 일반 경고창(확인버튼만 있음)
+		// propmt : 텍스트를 표시하는 동시에 사용자에게 입력을 받을때
+		// confirm : 메시지에 대하여 확인(true) 또는 취소(false)를 요청
+		let friendName = document.getElementById("friendName").innerText;
+		
+		let answer = confirm(friendName + " 친구를 정말 삭제하시겠습니까?");
+		if(answer){
+			location.href = "/deleteFriend?name=" + friendName;
+		}
+	}
+</script>
+</head>
+<body>
+<!-- ${객체.필드이름} -->
+<!-- th:object로 ${객체} -> 내부 요소 *{필드이름} / 위와 두 가지 방법이 있다 --> 
+<h1>친구 <span th:text = "${f.name}"></span>의 정보</h1>
+<h3>${}로 표시하기</h3>
+<table border = "1">
+	<tr>
+		<th>이름</th>
+		<td th:text = "${f.name}"></td>
+	</tr>
+	<tr>
+		<th>나이</th>
+		<td th:text = "${f.age}"></td>
+	</tr>
+	<tr>
+		<th>전화번호</th>
+		<td th:text = "${f.phone}"></td>
+	</tr>
+	<tr>
+		<th>주소</th>
+		<td th:text = "${f.adress}"></td>
+	</tr>
+	<tr>
+		<th>분류</th>
+		<td th:text = "${f.category}"></td>
+	</tr>
+</table>
+
+<h3>th:object와 *{}로 표시하기</h3>
+<table border = "1" th:object = "${f}">
+	<tr>
+		<th>이름</th>
+		<td th:text = "*{name}" id = "friendName"></td>
+	</tr>
+	<tr>
+		<th>나이</th>
+		<td th:text = "*{age}"></td>
+	</tr>
+	<tr>
+		<th>전화번호</th>
+		<td th:text = "*{phone}"></td>
+	</tr>
+	<tr>
+		<th>주소</th>
+		<td th:text = "*{adress}"></td>
+	</tr>
+	<tr>
+		<th>분류</th>
+		<td th:text = "*{category}"></td>
+	</tr>
+</table><br>
+<input type = "button" value = "수정하기" onclick = "update()">
+<input type = "button" value = "삭제하기" onclick = "deleteInfo()">
+</body>
+</html>

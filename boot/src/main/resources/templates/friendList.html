@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html xmlns:th="http:\\www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+<h1>내 친구 목록</h1>
+<table border = "1">
+	<tr th:each="friend : ${fList}">
+		<td th:text="${friend.name}"></td> <!-- friend.getName(); -->
+		<td th:text="${friend.age}"></td>
+		<td th:text="${friend.phone}"></td>
+		<td th:text="${friend.isActive}"></td>
+	</tr>
+</table>
+</body>
+</html>

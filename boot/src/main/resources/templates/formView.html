@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+<h1>폼에서 데이터 보내기</h1>
+<!-- form 태그에 지정하는 속성 중요 2가지 -->
+<!-- action = submit 눌렀을 떄 실행하고 싶은 주소 -->
+<!-- method = submit 눌렀을 때 데이터를 서버에 어떻게 보낼건지? -->
+<!-- get : 쿼리스트링으로 데이터를 보내는 방법 -->
+<h1>Get 방식으로 보내기</h1>
+<form action = "/sendForm" method = "get">
+	<!-- 서버에 데이터를 보낼때는 서버가 인식할 수 있는 이름표를 붙여야 한다 name -->
+	<!-- action에서 실행되는 메서드의 파라미터 이름과 같아야 함! getFromdata -->
+	이름 : <input type = "text" name = "name"><br>
+	나이 : <input type = "text" name = "age"><br>
+	<!-- 확인버튼 -->
+	<input type="submit" value="보내기">
+</form>
+
+<!-- post : HTTP 요청 객체에  데이터를 담아서 보내는 방법 -->
+<!-- POST 방식은 쿼리스트링을 생성하지 않는다 -->
+<h1>POST 방식으로 보내기</h1>
+<form action = "/sendForm" method = "post">
+	<!-- 서버에 데이터를 보낼때는 서버가 인식할 수 있는 이름표를 붙여야 한다 name -->
+	<!-- action에서 실행되는 메서드의 파라미터 이름과 같아야 함! getFormdata -->
+	이름 : <input type = "text" name = "name"><br>
+	나이 : <input type = "text" name = "age"><br>
+	<!-- 확인버튼 -->
+	<input type="submit" value="보내기">
+</form>
+
+<h1>객체보내기(1)</h1>
+<form action = "/sendObject" method = "get">
+	이름 : <input type = "text" name = "name"><br> <!-- setName() -->
+	나이 : <input type = "text" name = "age"><br> 
+	전화번호 : <input type = "text" name = "phone"><br>
+	<!-- input type = radio 추가한 name 속성 -->
+	<!-- 동일한 name을 가지고 있는 라디오 버튼을 하나의 그룹으로 묶음 -->
+	<!-- radio에 value 지정 -> 선택된 radio의 값이 전해짐 -->
+	접속중? <input type = "radio" name = "isActive" value = "true">접속중
+		   <input type = "radio" name = "isActive" value = "false">부재중<br>
+	<!-- 확인버튼 -->
+	<input type="submit" value="보내기">
+</form>
+
+<h1>객체보내기(2)</h1>
+<form action = "/sendObject2" method = "get">
+	이름 : <input type = "text" name = "name"><br>
+	나이 : <input type = "text" name = "age"><br>
+	전화번호 : <input type = "text" name = "phone"><br>
+	접속중? <input type = "radio" name = "isActive" value = "true">접속중
+		   <input type = "radio" name = "isActive" value = "false">부재중<br>
+	<input type="submit" value="보내기">
+</form>
+
+<h1>객체보내기(3)</h1>
+<!-- 보안을 유지해야하는 데이터를 보낼때는 POST방식을 사용한다 -->
+<form action = "/loginTest" method = "post">
+	아이디 : <input type = "text" name = "userId"><br>
+	비밀번호 : <input type = "password" name = "pw"><br>
+	<input type="submit" value="로그인">
+</form>
+</body>
+</html>

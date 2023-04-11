@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html xmlns:th="http:\\www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+<h1>데이터 받아오기(2)</h1>
+
+<p th:text="${strList}"></p>
+
+<!-- 반복문 -> th:each = "요소 하나의 이름 : 뭉탱이" -->
+<ul>
+	<li th:each="s : ${strList}">
+		<span th:text="${s}"></span>
+	</li>
+</ul>
+
+<ul>
+	<li th:each="s, state : ${strList}">
+		<span th:text="${s}"></span> :
+		<span th:text="${state}"></span> :
+		<span th:text="${state.count}"></span>
+	</li>
+</ul>
+
+<p th:text=${iList}></p>
+<ul>
+	<li th:each="s : ${iList}">
+	<span th:text=${s}></span>
+	</li>
+</ul>
+<hr>
+
+<h1>객체 리스트 사용하기</h1>
+<p>
+	리스트에 등록된 사람 수 <span th:text="${#lists.size(fList)}"></span>명
+</p>
+<table border = "1">
+	<tr>
+		<th>번호</th>
+		<th>이름</th>
+		<th>나이</th>
+		<th>전화번호</th>
+		<th>접속중</th>
+		<th>접속중(2)</th>
+		<th>접속중(3)</th>
+	</tr>
+	<tr th:each="friend, state : ${fList}"> <!-- th:each와 내부의 태그가 반복됨 -->
+		<td th:text="${state.count}">번호</td>
+		<td th:text="${friend.name}"></td>
+		<td th:text="${friend.age}"></td>
+		<td th:text="${friend.phone}"></td>
+		<td th:text="${friend.isActive}"></td>
+		<!-- 접속중(2) 열에 보여줄 값은 둘 중의 하나임 -->
+		<td th:if="${friend.isActive} == true" th:text="접속중"></td>
+		<td th:unless="${friend.isActive} == true" th:text="부재중"></td>
+		<!-- 삼항연산자 -> 조건 ? true : false -->
+		<td th:text="${friend.isActive} ? '접속중' : '부재중'"></td>
+	</tr>
+</table>
+<hr>
+
+<h1>맵 사용하기</h1>
+<p th:text="${fMap}"></p>
+
+<h1>맵에서 데이터 하나 꺼내기</h1>
+<p th:text="${fMap['eric']}"></p> <!-- 맵이름['Key이름'] -->
+<p th:text="${fMap['stan']}"></p>
+<p th:text="${fMap['kenny']}"></p>
+
+<h2>맵 + 반목문</h2>
+<!-- 전체 등록된 사람 n명 -->
+<p>
+	전체 등록된 사람 <span th:text="${#maps.size(fMap)}"></span>명
+</p>
+<table border = "1">
+	<tr>
+		<th>이름(Key)</th><th>이름(2)</th><th>나이</th><th>전화번호</th><th>접속중</th>
+	</tr>
+	<tr th:each="f, state : ${fMap}"> <!-- Map에서 Key, Value 쌍을 꺼냄 -->
+		<td th:text="${f.key}"></td>
+		<td th:text="${f.value.name}"></td>
+		<td th:text="${f.value.age}"></td>
+		<td th:text="${f.value.phone}"></td>
+		<td th:text="${f.value.isActive}"></td>
+	</tr>
+</table>
+
+</body>
+</html>

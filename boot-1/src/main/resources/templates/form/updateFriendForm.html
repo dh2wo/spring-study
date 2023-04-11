@@ -1,0 +1,48 @@
+<!-- updateFriendForm -->
+<!DOCTYPE html>
+<html xmlns:th="http:\\www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script src = "js/friendScript.js"></script>
+</head>
+<body>
+	<h1>친구 정보 수정하기</h1>
+	<!-- form에 서버에서 받아온 Friend 객체의 정보 넣기 -->
+	<form action="/updateFriend" method="post"
+		onsubmit="return validate();">
+		<table border="1">
+			<tr>
+				<th>이름</th>
+				<td><input type="text" name="name" id="name" th:value="${friend.name}" readonly></td>
+			</tr>
+			<tr>
+				<th>나이</th>
+				<td><input type="text" name="age" id="age" th:value="${friend.age}"></td>
+			</tr>
+			<tr>
+				<th>전화번호</th>
+				<td><input type="text" name="phone" id="phone" th:value="${friend.phone}"></td>
+			</tr>
+			<tr>
+				<th>주소</th>
+				<td><input type="text" name="adress" id="adress" th:value="${friend.adress}"></td>
+			</tr>
+			<tr>
+				<th>분류</th>
+				<td>
+					<!-- option 태그의 selected 속성이 참인 option이 먼저 표시됨 -->
+					<!-- 만약 friend의 catergory가 특정한 text라면 -> selected 발동! -->
+					<select name="category">
+						<option value="school" th:selected = "${friend.category} == 'shool'">학교친구</option>
+						<option value="town" th:selected = "${friend.category} == 'town'">동네친구</option>
+						<option value="net" th:selected = "${friend.category} == 'net'">인터넷친구</option>
+					</select></td>
+			</tr>
+			<tr>
+				<th colspan="2"><input type="submit" value="수정하기">
+			</tr>
+		</table>
+	</form>
+</body>
+</html>

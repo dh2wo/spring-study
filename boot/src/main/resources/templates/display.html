@@ -1,0 +1,60 @@
+<!-- prefix : 접두어 -->
+<html xmlns:th="http:\\www.thymeleaf.org">
+<head>
+</head>
+<body>
+	<h1>데이터 받아오기 연습</h1>
+	<!-- 템플릿 엔진 : 서버에서 받아온 내용을 표시하기 위한 도구 -->
+	<ul>
+		<!-- th:xxx 타임리프 문법  -->
+		<!-- th:text = "" 해당하는 태그에 텍스트를 삽입 -->
+		<!-- ${key} : 모델에 들어있는 데이터 -->
+		<li th:text ="${korean}">텍스트</li>
+		<li th:text ="${english}"></li>
+		<!-- 이름 표시하기 -->
+		<li th:text ="${name}"></li>
+		<!-- 태그가 포함된 문자열 -->
+		<!-- th:text는 문자열을 그대로 표현한다 -->
+		<li th:text ="${tag}"></li>
+		<!-- th:utext -->
+		<li th:utext ="${tag}"></li>
+		<!-- null 데이터 표시 -->
+		<li th:text ="${nullData}"></li>
+		<!-- 비어있는 문자열 표시 -->
+		<li th:text ="${emptyData}"></li>
+		<!-- 숫자 표시하기 -->
+		<li th:text ="${number}"></li>
+		<li th:text ="${pi}"></li>
+	</ul>
+	
+	<h1>객체 정보 가져오기</h1>
+	<ul>
+		<!-- 객체 정보를 출력할 때 키 값만 사용한다면 -> 객체의 toString() 메서드 자동 실행 -->
+		<li th:text="${f1}"></li> <!-- f1.toString(); -->
+		<li th:text="${f2}"></li>
+		<li th:text="${f1.name}"></li> <!-- 해당하는 필드의 getter 실행 -->
+		<li th:text="${f1.age}"></li>
+		<li th:text="${f1.phone}"></li>
+		<li th:text="${f1.isActive}"></li>
+	</ul>
+		
+	<!-- 객체 정보를 가지고 오는 두 번째 방법 th:object -->
+	<ul th:object="${f1}"> <!-- ul이하의 자식요소에서 사용할 객체를 선언 -->
+		<!-- 객체 내부의 필드만 호출할때 -->
+		<li th:text="*{name}"></li>
+		<li th:text="*{age}"></li>
+		<li th:text="*{phone}"></li>
+		<li th:text="*{isActive}"></li>
+	</ul>
+		
+	<!-- f2 가지고 오기 -->
+	<ul th:object="${f2}">
+		<li th:text="*{name}"></li>
+		<li th:text="*{age}"></li>
+		<li th:text="*{phone}"></li>
+		<li th:text="*{isActive}"></li>
+	</ul>
+		
+	
+</body>
+</html>

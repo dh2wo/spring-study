@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http:\\www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+<h1>서버에 데이터 보내기</h1>
+<ul>
+	<li>
+		<a href = "/sendOne?name=gildong&age=40">기본 방식의 데이터 전송</a>
+	</li>
+	<br>
+	<!-- 한번 해보려고 하다가 망한 예 -->
+	<li th:each = "f : ${fList}">
+		<a th:href = "@{/sendOne?name=${f.name}&age=${f.age}}">
+			<span th:text = "${f.name}"></span>
+		</a>
+	</li>
+	<br>
+	
+	<!-- 심폐소생술 -->
+	<li th:each = "f : ${fList}">
+		<a th:href = "@{|/sendOne?name=${f.name}&age=${f.age}|}">
+			<span th:text = "${f.name}"></span>
+		</a>
+	</li>
+	<br>
+		
+	<!-- 타임리프 문법을 이용한 URL의 잘된 예 -->
+	<li th:each = "f : ${fList}"> 
+		<a href = "#" th:href = "@{/sendOne(name=gildong, age=40)}" th:text = ${f.name}></a>
+	</li>
+	<br>
+	
+	<!-- 동적인 값 보내기! -->
+	<li th:each = "f : ${fList}">
+		<a href = "#" th:href = "@{/sendOne(name=${f.name}, age=${f.age})}" th:text = "${f.name}"></a>
+	</li>
+</ul>
+</body>
+</html>

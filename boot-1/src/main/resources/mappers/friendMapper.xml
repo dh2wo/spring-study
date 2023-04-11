@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- 인터페이스 이름(풀네임) -->
+<mapper namespace="com.boot.dao.FriendDAO">
+
+<!-- 반환형이 int이면 resultType 생략해도 됨 -->
+<insert id="insertFriend" parameterType="Friend">
+	INSERT INTO
+		friend (fname, age, phone, adress, category)
+	VALUES
+		(#{name}, #{age}, #{phone}, #{adress}, #{category})
+</insert>
+
+<select id="selectAllFriend" resultType="Friend">
+	SELECT
+		fname AS name,
+		age,
+		phone,
+		adress,
+		category,
+		isactive
+	FROM
+		friend
+	ORDER BY
+		fname ASC
+	
+</select>
+
+<select id="selectOneFriend" resultType="Friend" parameterType="String">
+	SELECT
+		fname AS name,
+		age,
+		phone,
+		adress,
+		category,
+		isactive
+	FROM
+		friend
+	WHERE
+		fname = #{name}
+</select>
+
+<update id="updateFriend" parameterType="Friend">
+	UPDATE 
+		friend
+	SET
+		age = #{age},
+		phone = #{phone},
+		adress = #{adress},
+		category = #{category},
+		isActive = #{isActive}
+	WHERE
+		fname = #{name}
+</update>
+
+<delete id="deleteFriend" parameterType="String">
+	DELETE FROM
+		friend
+	WHERE
+		fname = #{name}
+</delete>
+
+<select id="searchFriend" parameterType="String" resultType="Friend">
+	SELECT
+		fname AS name,
+		age,
+		phone,
+		adress,
+		category,
+		isactive
+	FROM
+		friend
+	WHERE
+		fname LIKE '%'||#{name}||'%'
+	ORDER BY
+		fname ASC
+</select>
+
+</mapper>

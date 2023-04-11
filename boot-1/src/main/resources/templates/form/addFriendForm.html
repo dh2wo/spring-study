@@ -1,0 +1,46 @@
+<!-- addFriendForm -->
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script src = "js/friendScript.js"></script>
+</head>
+<body>
+<h1>친구 추가하기</h1>
+<form action = "/addFriend" method = "post" onsubmit = "return validate();">
+	<table border = "1">
+		<tr>
+			<th>이름</th>
+			<td><input type = "text" name = "name" id = "name" placeholder = "이름을 입력하세요."></td>
+		</tr>
+		<tr>
+			<th>나이</th>
+			<td><input type = "text" name = "age" id = "age" placeholder = "나이를 입력하세요."></td>
+		</tr>
+		<tr>
+			<th>전화번호</th>
+			<td><input type = "text" name = "phone" id = "phone" placeholder = "전화번호를 입력하세요."></td>
+		</tr>
+		<tr>
+		<th>주소</th>
+			<td><input type = "text" name = "adress" id = "adress" placeholder = "주소를 입력하세요."></td>
+		</tr>
+		<tr>
+			<th>분류</th>
+			<td>
+				<select name = "category">
+					<option value = "school">학교친구</option>
+					<option value = "town">동네친구</option>
+					<option value = "net">인터넷친구</option>
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<th colspan ="2">
+			<input type = "submit" value = "추가하기">
+		</tr>
+	</table>
+</form>
+</body>
+</html>
