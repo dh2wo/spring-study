@@ -8,7 +8,7 @@
 
 
 ### 설명
-- Spring Boot를 기반으로 개발
+- Spring Boot를 기반으로 게시판 CRUD 구현
 - MVC 패턴을 활용하여 애플리케이션의 구조 정리
   - 각각의 역할을 수행하는 VO, Controller, Service, DAO로 코드 분리
 - MyBatis를 이용하여 데이터베이스와의 상호작용
