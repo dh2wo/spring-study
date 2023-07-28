@@ -4,6 +4,7 @@
 - JDK(8)
 - IDE: eclipse
 - Framework: Spring Boot
+- Database: MySQL
 
 
 ### 설명
